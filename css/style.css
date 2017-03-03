@@ -1,6 +1,6 @@
 @charset "utf-8";
 body {
-	background: ;/*#E9E9E8*/
+	/*background: #E9E9E8*/
 	margin: 0;
 	padding: 0;
 	color: #333;
@@ -50,12 +50,12 @@ a:active, a:hover {
 	/*background: *#E9E9E8*/
 	margin: 0 auto; 
 }
-header {
-	background: ;/*#E9E9E8*/
-}
+/*header {
+	background: ;#E9E9E8
+}*/
 .sidebar1 {
 	float: left;
-	background: ; /*#E9E9E8*/
+	/*background: ; #E9E9E8*/
 	/*width: 180px;*/
 	padding-bottom: 10px;
 }
@@ -85,17 +85,17 @@ header {
 aside {
 	float: left;
 	width: 160px;
-	background: ;/*#E9E9E8*/
+	/*background: ;#E9E9E8*/
 	padding: 15px 0;
 	margin-left: 2px;
 }
-aside2 {
-	align: top;
+/*aside {
+	text-align: top;
 	float: left;
 	width: 313px;
-	background: ;/*#E9E9E8*/
+	background: #E9E9E8;
 	padding: 15px 0;
-}
+}*/
 .content ul, .content ol {
 	padding: 0 15px 15px 40px; 
 }
@@ -112,7 +112,7 @@ nav a:hover, nav a:active, nav a:focus {
 }
 footer {
 	padding: 10px 0;
-	background: 
+	/*background: */
 	position: relative;
 	clear: both; 
 }
