@@ -9,6 +9,7 @@ function ready(fn, target, origin) {
 }
 
 ready(toload, 'LoadMe', 'a.pageFetcher');
+ready(toload, 'content', 'a.noir')
 
 function toload(target, origin) {
 
