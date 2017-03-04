@@ -1,31 +1,31 @@
-function ready(fn) {
+function ready(fn, target, origin) {
     if (document.readyState != 'loading') {
-        fn();
+        fn(target, origin);
     } else {
-        document.addEventListener('DOMContentLoaded', fn);
+        document.addEventListener('DOMContentLoaded', function() {
+            fn(target, origin);
+        });
     }
 }
-ready(toload);
 
-function toload() {
+ready(toload, 'LoadMe', 'a.pageFetcher');
 
-    var loadme = document.getElementById('LoadMe');
-    console.log("blah blah");
-    var links = document.querySelectorAll('a.pageFetcher');
-    Array.prototype.forEach.call(links, function (el, i) {
-        el.onclick = function () {
+function toload(target, origin) {
+
+    var loadme = document.getElementById(target);
+    var links = document.querySelectorAll(origin);
+    Array.prototype.forEach.call(links, function(el, i) {
+        el.onclick = function() {
             console.log(this.getAttribute('href'));
             var url = this.getAttribute('href');
             fetch(url)
-                .then(function (response) {
-                    console.log("blouh");
+                .then(function(response) {
                     return response.text();
                 })
-                .then(function (body) {
+                .then(function(body) {
                     loadme.innerHTML = body;
                 });
             return false;
         };
     });
 }
-
