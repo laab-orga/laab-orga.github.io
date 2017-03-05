@@ -1,0 +1,7 @@
+{
+    "projFile": "./laab.fsx",
+    "sourceMaps": true,
+    "rollup": {
+        "dest": "./js/script.js"
+    }
+}

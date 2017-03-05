@@ -1,0 +1,10 @@
+{
+  "private": "true",
+  "scripts": {},
+  "devDependencies": {
+    "fable-powerpack": "0.0.20"
+  },
+  "dependencies": {
+    "fable-core": "^0.7.28"
+  }
+}
