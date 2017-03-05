@@ -26,11 +26,19 @@ let rec toload target origin =
     let loadme = document.getElementById(target)
     let links = document.querySelectorAll(origin)
     let l = links.length
+    let reparseFun =
+        match target with
+        | "content" -> (fun _ -> toload "LoadMe" "a.pageFetcher")
+        | _ -> ignore
     for i in 0.0 .. (l-1.0) do
         let el = links.item(i) :?> HTMLElement
         let url = el.getAttribute("href")
-        el.onclick <- (fun _ -> fetchMy url loadme (fun _ -> toload "LoadMe" "a.pageFetcher")
+        el.onclick <- (fun _ -> fetchMy url loadme reparseFun
                                 |> Async.StartImmediate
+                                let curActive = document.querySelector(origin + ".active")
+                                match curActive with
+                                | null -> ()
+                                | _ -> curActive.classList.remove("active")
                                 box false)
 
 let init() = 
@@ -39,6 +47,5 @@ let init() =
         (fun _ -> (toload "LoadMe" "a.pageFetcher")) 
     |> Async.StartImmediate
     toload "content" "a.noir"
-    document.getElementById("first").setActive()
 
 ready init
