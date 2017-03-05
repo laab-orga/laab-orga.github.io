@@ -1,10 +1,12 @@
 {
-  "private": "true",
-  "scripts": {},
-  "devDependencies": {
-    "fable-powerpack": "0.0.20"
-  },
-  "dependencies": {
-    "fable-core": "^0.7.28"
-  }
+    "private": true,
+    "scripts": {
+        "uglify": "uglifyjs --compress --in-source-map js/script.js.map --source-map js/script.min.js.map -o js/script.min.js -- js/script.js"
+    },
+    "devDependencies": {
+        "fable-powerpack": "0.0.20"
+    },
+    "dependencies": {
+        "fable-core": "^0.7.28"
+    }
 }

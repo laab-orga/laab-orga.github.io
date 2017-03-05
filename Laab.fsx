@@ -15,9 +15,7 @@ let ready fn =
 
 let fetchMy url (loadme:Element) post =
     async {
-        printfn "url : %s" url
         let! response = fetch url [] |> Async.AwaitPromise
-        printfn "body %A" response
         let! body = response.text() |> Async.AwaitPromise
         loadme.innerHTML <- body
         post()
@@ -31,7 +29,6 @@ let rec toload target origin =
     for i in 0.0 .. (l-1.0) do
         let el = links.item(i) :?> HTMLElement
         let url = el.getAttribute("href")
-        printfn "%s" url
         el.onclick <- (fun _ -> fetchMy url loadme (fun _ -> toload "LoadMe" "a.pageFetcher")
                                 |> Async.StartImmediate
                                 box false)
@@ -42,5 +39,6 @@ let init() =
         (fun _ -> (toload "LoadMe" "a.pageFetcher")) 
     |> Async.StartImmediate
     toload "content" "a.noir"
+    document.getElementById("first").setActive()
 
 ready init
