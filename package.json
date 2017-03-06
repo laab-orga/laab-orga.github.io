@@ -1,13 +1,13 @@
 {
-  "private": true,
-  "scripts": {
-    "uglify": "uglifyjs --compress --in-source-map js/script.js.map -o js/script.min.js --source-map js/script.min.js.map --source-map-url script.min.js.map  -- js/script.js"
-  },
-  "devDependencies": {
-    "fable-powerpack": "0.0.20",
-    "justlazy": "^1.6.0"
-  },
-  "dependencies": {
-    "fable-core": "^0.7.28"
-  }
+    "private": true,
+    "scripts": {
+        "uglify": "uglifyjs --compress --in-source-map js/script.js.map -o js/script.min.js --source-map js/script.min.js.map --source-map-url script.min.js.map  -- js/script.js"
+    },
+    "devDependencies": {
+        "fable-powerpack": "0.0.20",
+        "justlazy": "git@github.com:fradav/justlazy.git"
+    },
+    "dependencies": {
+        "fable-core": "^0.7.28"
+    }
 }

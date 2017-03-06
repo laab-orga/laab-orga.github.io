@@ -7,7 +7,6 @@ open Fable.Import.Browser
 open Fable.PowerPack
 open Fable.Core.JsInterop
 
-//JsInterop.importAll "isomorphic-fetch"
 let ready fn =
     if (document.readyState <> "loading") 
     then 
