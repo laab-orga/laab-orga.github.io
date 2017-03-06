@@ -5,6 +5,8 @@
 open Fable.Core
 open Fable.Import.Browser
 open Fable.PowerPack.Fetch
+open Fable.Core.JsInterop
+
 let ready fn =
     if (document.readyState <> "loading") 
     then 
@@ -13,12 +15,14 @@ let ready fn =
         document.addEventListener("DOMContentLoaded",
                                   U2.Case1 (EventListener(fun _ -> fn())))
 
+let JustLazy = importDefault<obj> "./node_modules/justlazy/src/justlazy.js"
 let fetchMy url (loadme:Element) post =
     async {
         let! response = fetch url [] |> Async.AwaitPromise
         let! body = response.text() |> Async.AwaitPromise
         loadme.innerHTML <- body
         post()
+        JustLazy?registerLazyLoadByClass("justlazy-spinner") |> ignore
         return ()
     }
 
@@ -35,17 +39,11 @@ let rec toload target origin =
         let url = el.getAttribute("href")
         el.onclick <- (fun _ -> fetchMy url loadme reparseFun
                                 |> Async.StartImmediate
-                                let curActive = document.querySelector(origin + ".active")
-                                match curActive with
-                                | null -> ()
-                                | _ -> curActive.classList.remove("active")
                                 box false)
 
-let init() = 
-    fetchMy "Content.html" 
-        (document.getElementById("content")) 
-        (fun _ -> (toload "LoadMe" "a.pageFetcher")) 
-    |> Async.StartImmediate
-    toload "content" "a.noir"
+let init() =
+    toload "content" "nav a"
+    document.getElementById("first").click()
+    document.getElementById("first").focus()
 
 ready init
