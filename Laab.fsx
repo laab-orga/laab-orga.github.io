@@ -4,9 +4,10 @@
 
 open Fable.Core
 open Fable.Import.Browser
-open Fable.PowerPack.Fetch
+open Fable.PowerPack
 open Fable.Core.JsInterop
 
+//JsInterop.importAll "isomorphic-fetch"
 let ready fn =
     if (document.readyState <> "loading") 
     then 
@@ -16,10 +17,11 @@ let ready fn =
                                   U2.Case1 (EventListener(fun _ -> fn())))
 
 let JustLazy = importDefault<obj> "./node_modules/justlazy/src/justlazy.js"
+
 let fetchMy url (loadme:Element) post =
-    async {
-        let! response = fetch url [] |> Async.AwaitPromise
-        let! body = response.text() |> Async.AwaitPromise
+    promise {
+        let! response = Fetch.fetch url [] 
+        let! body = response.text()
         loadme.innerHTML <- body
         post()
         JustLazy?registerLazyLoadByClass("justlazy-spinner") |> ignore
@@ -38,7 +40,7 @@ let rec toload target origin =
         let el = links.item(i) :?> HTMLElement
         let url = el.getAttribute("href")
         el.onclick <- (fun _ -> fetchMy url loadme reparseFun
-                                |> Async.StartImmediate
+                                |> Async.AwaitPromise |> Async.StartImmediate
                                 box false)
 
 let init() =
