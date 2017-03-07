@@ -40,11 +40,16 @@ let rec toload target origin =
         let url = el.getAttribute("href")
         el.onclick <- (fun _ -> fetchMy url loadme reparseFun
                                 |> Async.AwaitPromise |> Async.StartImmediate
+                                let curactive = document.querySelector(origin + ".active")
+                                try 
+                                    curactive.classList.remove("active")
+                                with
+                                    _ -> ()
+                                el.classList.add("active")
                                 box false)
 
 let init() =
     toload "content" "nav a"
     document.getElementById("first").click()
-    document.getElementById("first").focus()
 
 ready init

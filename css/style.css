@@ -60,8 +60,17 @@ a:focus {
 a:active,
 a:hover,
 a:focus {
-    background: #0CF;
+    background: #0FF;
     /*bleu*/
+    color: #333;
+    /*noir*/
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+}
+
+a.active {
+    /*bleu*/
+    background: #0CF;
     color: #333;
     /*noir*/
     font-family: Arial, Helvetica, sans-serif;
@@ -150,6 +159,10 @@ nav a:focus {
     color: #333;
 }
 
+nav a.active {
+    background: #095;
+}
+
 footer {
     padding: 10px 0;
     /*background: */
@@ -210,12 +223,14 @@ figure {
     font-size: 90%;
 }
 
+
 /**
  * justlazy.css 1.6.0
  *
  * Repo: https://github.com/fhopeman/justlazy
  * Demo: http://fhopeman.github.io/justlazy
  */
+
 @-webkit-keyframes rotate360 {
     from {
         -webkit-transform: rotate(0deg);
@@ -226,6 +241,7 @@ figure {
         transform: rotate(360deg);
     }
 }
+
 @keyframes rotate360 {
     from {
         -webkit-transform: rotate(0deg);
@@ -236,6 +252,7 @@ figure {
         transform: rotate(360deg);
     }
 }
+
 .justlazy-spinner {
     position: relative;
     border-top: 0.6em solid rgba(255, 255, 255, 0.2);
@@ -247,6 +264,7 @@ figure {
     -moz-animation: rotate360 1s infinite linear;
     -o-animation: rotate360 1s infinite linear;
 }
+
 .justlazy-spinner,
 .justlazy-spinner:after {
     border-radius: 50%;

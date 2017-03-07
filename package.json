@@ -1,11 +1,14 @@
 {
     "private": true,
     "scripts": {
+        "build": "npm-run fable",
+        "watch": "npm-run fable -w",
         "uglify": "uglifyjs --compress --in-source-map js/script.js.map -o js/script.min.js --source-map js/script.min.js.map --source-map-url script.min.js.map  -- js/script.js"
     },
     "devDependencies": {
+        "fable-compiler": "^0.7.48",
         "fable-powerpack": "0.0.20",
-        "justlazy": "git@github.com:fradav/justlazy.git"
+        "justlazy": "git+ssh://git@github.com:fradav/justlazy.git#1.6.1"
     },
     "dependencies": {
         "fable-core": "^0.7.28"
