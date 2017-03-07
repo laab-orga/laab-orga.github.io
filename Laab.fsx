@@ -7,6 +7,9 @@ open Fable.Import.Browser
 open Fable.PowerPack
 open Fable.Core.JsInterop
 
+importAll "core-js/shim"
+importAll "whatwg-fetch"
+let JustLazy = importDefault<obj> "./node_modules/justlazy/src/justlazy.js"
 let ready fn =
     if (document.readyState <> "loading") 
     then 
@@ -14,9 +17,7 @@ let ready fn =
     else
         document.addEventListener("DOMContentLoaded",
                                   U2.Case1 (EventListener(fun _ -> fn())))
-
-let JustLazy = importDefault<obj> "./node_modules/justlazy/src/justlazy.js"
-
+                                  
 let fetchMy url (loadme:Element) post post2 hidden =
     promise {
         let! response = Fetch.fetch url [] 
@@ -35,6 +36,7 @@ let findVisible (l : NodeListOf<Element>) =
     seq { for i in 0.0 .. (l.length - 1.0) do
             let el = l.item(i) :?> HTMLElement
             if (not el.hidden) then yield el }
+
 
 let makeVisible (l: NodeListOf<Element>) =
     for i in 0.0 .. (l.length - 1.0) do

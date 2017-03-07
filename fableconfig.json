@@ -3,5 +3,9 @@
     "sourceMaps": true,
     "rollup": {
         "dest": "./js/script.js"
+    },
+    "scripts": {
+        "postbuild": "yarn uglify"
     }
+
 }

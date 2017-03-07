@@ -8,7 +8,9 @@
     "devDependencies": {
         "fable-compiler": "^0.7.48",
         "fable-powerpack": "0.0.20",
-        "justlazy": "git+ssh://git@github.com:fradav/justlazy.git#1.6.1"
+        "justlazy": "git+ssh://git@github.com:fradav/justlazy.git#1.6.1",
+        "promise-polyfill": "^6.0.2",
+        "whatwg-fetch": "^2.0.3"
     },
     "dependencies": {
         "fable-core": "^0.7.28"
