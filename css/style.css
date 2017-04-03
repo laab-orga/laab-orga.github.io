@@ -1,0 +1,274 @@
+@charset "utf-8";
+body {
+    /*background: #E9E9E8*/
+    margin: 0;
+    padding: 0;
+    color: #333;
+    font-family: arial;
+    font-size: 80%;
+    line-height: 1.2;
+    /* augmente l'interligne */
+}
+
+ul,
+ol,
+dl {
+    padding: 0;
+    margin: 0;
+}
+
+h2,
+h4,
+h6,
+p2 {
+    margin-top: 0;
+    padding-right: 15px;
+    padding-left: 0px;
+}
+
+h1,
+h3,
+h5,
+p {
+    margin-top: 0;
+    padding-right: 15px;
+    padding-left: 0px;
+    text-justify: auto;
+}
+
+a img {
+    border: none;
+}
+
+a:-webkit-any-link {
+    text-decoration: none;
+}
+
+a:link {
+    color: #333;
+}
+
+a:visited {
+    color: #333;
+    text-decoration: none;
+}
+
+a:focus {
+    text-decoration: none;
+}
+
+a:active,
+a:hover,
+a:focus {
+    background: #0FF;
+    /*bleu*/
+    color: #333;
+    /*noir*/
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+}
+
+a.active {
+    /*bleu*/
+    background: #0CF;
+    color: #333;
+    /*noir*/
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+}
+
+.container {
+    width: 1000px;
+    /*background: *#E9E9E8*/
+    margin: 0 auto;
+}
+
+
+/*header {
+	background: ;#E9E9E8
+}*/
+
+.sidebar1 {
+    float: left;
+    /*background: ; #E9E9E8*/
+    /*width: 180px;*/
+    padding-bottom: 10px;
+}
+
+.content {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 15px 0;
+    width: 500px;
+    float: left;
+}
+
+.contentPresentation {
+    margin-left: 0px;
+    margin-right: 114px;
+    padding: 15px 0;
+    width: 560px;
+    float: left;
+    /*text-align: justify;*/
+}
+
+.textjustify {
+    /*margin-left: 15px;*/
+    margin-right: 5px;
+    /*padding: 15px 0;
+	width: 560px;*/
+    float: left;
+    text-align: justify;
+}
+
+aside {
+    float: left;
+    width: 160px;
+    /*background: ;#E9E9E8*/
+    padding: 15px 0;
+    margin-left: 2px;
+}
+
+
+/*aside {
+	text-align: top;
+	float: left;
+	width: 313px;
+	background: #E9E9E8;
+	padding: 15px 0;
+}*/
+
+.content ul,
+.content ol {
+    padding: 0 15px 15px 40px;
+}
+
+nav a,
+nav a:visited {
+    padding: 2px 2px 2px 5px;
+    display: block;
+    width: auto;
+    text-decoration: none;
+    background: #99FF33;
+}
+
+nav a:hover,
+nav a:active,
+nav a:focus {
+    background: #0CF;
+    color: #333;
+}
+
+nav a.active {
+    background: #095;
+}
+
+footer {
+    padding: 10px 0;
+    /*background: */
+    position: relative;
+    clear: both;
+}
+
+.fltrt {
+    float: right;
+    margin-left: 8px;
+}
+
+.fltlft {
+    float: left;
+    margin-right: 8px;
+}
+
+.clearfloat {
+    clear: both;
+    height: 0;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+.fondjaune {
+    color: #000000;
+    background-color: #99FF33;
+}
+
+.souligné {
+    text-decoration: underline;
+}
+
+.noir {
+    color: #000;
+}
+
+.texteimage {
+    padding: 4px;
+}
+
+header,
+section,
+footer,
+aside,
+nav,
+article,
+figure {
+    display: block;
+}
+
+.italic {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+}
+
+.soustitre {
+    font-size: 90%;
+}
+
+
+/**
+ * justlazy.css 1.6.0
+ *
+ * Repo: https://github.com/fhopeman/justlazy
+ * Demo: http://fhopeman.github.io/justlazy
+ */
+
+@-webkit-keyframes rotate360 {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate360 {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.justlazy-spinner {
+    position: relative;
+    border-top: 0.6em solid rgba(255, 255, 255, 0.2);
+    border-right: 0.6em solid rgba(255, 255, 255, 0.2);
+    border-bottom: 0.6em solid rgba(255, 255, 255, 0.2);
+    border-left: 0.6em solid #878787;
+    animation: rotate360 1s infinite linear;
+    -webkit-animation: rotate360 1s infinite linear;
+    -moz-animation: rotate360 1s infinite linear;
+    -o-animation: rotate360 1s infinite linear;
+}
+
+.justlazy-spinner,
+.justlazy-spinner:after {
+    border-radius: 50%;
+    width: 4em;
+    height: 4em;
+    left: calc(50% - 2em);
+}
