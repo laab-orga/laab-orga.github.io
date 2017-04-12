@@ -121,7 +121,7 @@ a.active {
     text-align: justify;
 }
 
-aside {
+aside.gauche {
     float: left;
     width: 160px;
     /*background: ;#E9E9E8*/
@@ -129,7 +129,17 @@ aside {
     margin-left: 2px;
 }
 
+aside {
+	align: top;
+	float: left;
+	width: 313px;
+	background: ;/*#E9E9E8*/
+	padding: 15px 0;
+}
 
+aside p {
+    width: 315px;
+}
 /*aside {
 	text-align: top;
 	float: left;
