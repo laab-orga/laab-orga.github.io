@@ -3,12 +3,12 @@
     "scripts": {
         "build": "npm-run fable",
         "watch": "npm-run fable -w",
-        "uglify": "uglifyjs --compress --in-source-map js/script.js.map -o js/script.min.js --source-map js/script.min.js.map --source-map-url script.min.js.map  -- js/script.js"
+        "uglify": "uglifyjs --compress --in-source-map js/script.js.map -o js/script.min.js --source-map --source-map-url script.min.js.map  -- js/script.js"
     },
     "devDependencies": {
         "fable-compiler": "^0.7.48",
         "fable-powerpack": "0.0.20",
-        "justlazy": "git+ssh://git@github.com:fradav/justlazy.git#1.6.1",
+        "justlazy": "1.6.2",
         "promise-polyfill": "^6.0.2",
         "whatwg-fetch": "^2.0.3"
     },
