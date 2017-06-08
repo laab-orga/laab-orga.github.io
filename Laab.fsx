@@ -9,7 +9,9 @@ open Fable.Core.JsInterop
 
 importAll "core-js/shim"
 importAll "whatwg-fetch"
+
 let JustLazy = importDefault<obj> "./node_modules/justlazy/src/justlazy.js"
+
 let ready fn =
     if (document.readyState <> "loading") 
     then 
@@ -17,7 +19,7 @@ let ready fn =
     else
         document.addEventListener("DOMContentLoaded",
                                   U2.Case1 (EventListener(fun _ -> fn())))
-                                  
+
 let fetchMy url (loadme:Element) post post2 hidden =
     promise {
         let! response = Fetch.fetch url [] 
@@ -31,27 +33,24 @@ let fetchMy url (loadme:Element) post post2 hidden =
         post2()
         return ()
     }
-
-let findVisible (l : NodeListOf<Element>) =
-    seq { for i in 0.0 .. (l.length - 1.0) do
-            let el = l.item(i) :?> HTMLElement
-            if (not el.hidden) then yield el }
-
-
 let makeVisible (l: NodeListOf<Element>) =
-    for i in 0.0 .. (l.length - 1.0) do
-        JustLazy?registerLazyLoad(l.item(i)) |> ignore
+    l :?> seq<Element>
+    |> Seq.iter (fun e -> JustLazy?registerLazyLoad(e) |> ignore)
 
+let QuerySelectorAll<'a> (s: string) =
+    document.querySelectorAll(s) :?> seq<'a>
+    
 let rec fluff (el: HTMLElement) url target origin =
     let curactive = document.querySelector(origin + ".active")
     try
         match curactive with
         | null -> ()
         | _ -> curactive.classList.remove("active")
-        let old = document.querySelectorAll("#" + target + "> div") |> findVisible
-        match Seq.isEmpty old with
-        | true -> ()
-        | false -> (old |> Seq.head).hidden <- true
+        let old = QuerySelectorAll("#" + target + "> div")
+                  |> Seq.tryFind (fun (e: HTMLElement) -> not e.hidden)
+        match old with
+        | None -> ()
+        | Some s -> s.hidden <- true
         let newVis = document.getElementById(url)
         match newVis with
         | null -> printfn "Got null with document.getElementById(%s)" url
