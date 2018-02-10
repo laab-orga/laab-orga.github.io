@@ -2,16 +2,8 @@ module LaabApp
 
 open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Import
 open Fable.Import.Browser
 open Fable.PowerPack
-
-let add x y =
-    promise {
-        do! Promise.sleep 500 // Sleep for 500ms
-        return x + y
-    } 
-    |> Promise.start
 
 importAll "core-js/shim"
 importAll "whatwg-fetch"
