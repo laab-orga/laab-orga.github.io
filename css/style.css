@@ -130,10 +130,10 @@ aside.gauche {
 }
 
 aside {
-	align: top;
+	/* align: top; */
 	float: left;
 	width: 313px;
-	background: ;/*#E9E9E8*/
+	/* background: ;#E9E9E8 */
 	padding: 15px 0;
 }
 
