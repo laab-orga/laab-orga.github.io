@@ -97,7 +97,8 @@ let rec toload target origin =
         let reparseFun =
             match target with
             | "content" when url.Equals("#/Content.html") -> (fun _ -> toload "LoadMe" "a.pageFetcher")
-            | _ when url.Equals(firstUrl) -> (fun _ -> makeVisible(document.getElementById(firstUrl).querySelectorAll(".justlazy-spinner")))
+            | "content" when url.Equals(firstUrl) -> (fun _ -> (document.querySelector(sprintf @"a[href=""%s""" firstUrl) :?> HTMLElement).classList.add("active"); (document.querySelector(sprintf @"a[href=""%s""" "#/Content.html") :?> HTMLElement).classList.remove("active"); makeVisible(document.getElementById(firstUrl).querySelectorAll(".justlazy-spinner")))
+            | _ when url.Equals(firstUrl) -> (fun _ -> (document.querySelector(sprintf @"a[href=""%s""" firstUrl) :?> HTMLElement).classList.add("active"); makeVisible(document.getElementById(firstUrl).querySelectorAll(".justlazy-spinner")))
             | _ -> ignore
         fetchMy url loadme reparseFun postFirstContent hidden |> Async.AwaitPromise |> Async.StartImmediate
         el.onclick <- (fun _ -> fluff el url target origin)
