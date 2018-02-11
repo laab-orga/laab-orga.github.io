@@ -18,9 +18,9 @@ let ready fn =
         document.addEventListener("DOMContentLoaded",
                                   U2.Case1 (unbox (fun _ -> fn())))
 
-let fetchMy url (loadme:Element) post post2 hidden =
+let fetchMy (url:string) (loadme:Element) post post2 hidden =
     promise {
-        let! response = Fetch.fetch url [] 
+        let! response = Fetch.fetch (url.Substring(2)) [] 
         let! body = response.text()
         let mydiv = document.createElement_div()
         mydiv.id <- url
@@ -63,7 +63,7 @@ let rec fluff (el: HTMLElement) url target origin =
         with
             | ex -> printfn "%s" ex.Message
     el.classList.add("active")
-    box false
+    box true
 
 let rec toload target origin =
     let loadme = document.getElementById(target)
@@ -75,10 +75,16 @@ let rec toload target origin =
         | _ -> ignore
     for i in 0.0 .. (l-1.0) do
         let el = links.item(i) :?> HTMLElement
-        let url = el.getAttribute("href")
-        let hidden = not (System.String.Equals(url,"Content.html"))
+        let url = 
+            match (el.getAttribute("href")).Substring(0,2) with
+            | "#/" -> el.getAttribute("href")
+            | _ -> "#/" + el.getAttribute("href")
+        el.setAttribute("href",url)
+        let spotted = document.URL.Split([|'#'|])
+        
+        let hidden = not (System.String.Equals(url,"#/Content.html"))
         let postFirstContent = match url with
-                                | "Content.html" ->  (fun _ -> makeVisible(document.getElementById("firstContent").querySelectorAll(".justlazy-spinner")))
+                                | "#/Content.html" ->  (fun _ -> makeVisible(document.getElementById("firstContent").querySelectorAll(".justlazy-spinner")))
                                 | _ -> ignore
         fetchMy url loadme reparseFun postFirstContent hidden |> Async.AwaitPromise |> Async.StartImmediate
         el.onclick <- (fun _ -> fluff el url target origin)
