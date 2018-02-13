@@ -32,6 +32,7 @@ module.exports = {
   },
   devServer: {
     contentBase: resolve('../'),
+    publicPath: '/js/',
     port: 8080
   },
   module: {
