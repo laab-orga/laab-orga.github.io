@@ -95,10 +95,6 @@ open Elmish.Browser.UrlParser
 
 type Route = Nav of string | Content of string
 
-type Model =
-    { route : Route
-      content : string option }
-
 let contentParse (state: string) = 
     if state.StartsWith "content-" then
         Ok state
@@ -111,36 +107,32 @@ let route : Parser<Route->_,_> =
           map (Content "firstContent") (top)
           map Content (top </> custom "content" contentParse)
           map Nav (top </> str)]
-  
+
+let mapRoute result = 
+    let mapRes = 
+        match result with
+        | Some s -> s
+        | None -> Content "firstContent"
+    match mapRes with
+    | Content s -> fluff (selectHref "#/Content.html") "#/Content.html" "content" "nav a" |> ignore
+                   fluff (selectHref ("#/" + s)) ("#/" + s) "LoadMe" "a.pageFetcher" |> ignore
+    | Nav s -> fluff (selectHref ("#/" + s)) ("#/" + s) "content" "nav a" |> ignore                 
+    mapRes
+    
 open Elmish
 
-let urlUpdate (result:Option<Route>) model =
+let urlUpdate (result:Option<Route>) _ =
   printfn "urlUpdate : %A" result
-  match result with
-  | Some (Content content) ->
-      { model with route = Nav "Content.html"; content = Some content }, [] // Issue some search Cmd instead
-  | Some page ->
-      { model with route = page; content = None }, []
-  | None ->
-      ( model, Navigation.modifyUrl "#" ) // no matching route - go home
-
+  mapRoute result,[]
+  
 let init (result:Option<Route>) =
     ready (fun _ -> toload "content" "nav a")
-    printfn "init : %A" result 
-    match result with
-    | Some (Content "Content.html") -> { route = Nav "Content.html"; content = Some "firstContent" }, Cmd.none
-    | Some (Content s) -> { route = Nav "Content.html"; content = Some s }, Cmd.none
-    | Some s -> { route = s; content = None }, Cmd.none
-    | None -> { route = Nav "Content.html"; content = Some "firstContent" }, Cmd.none
+    printfn "init : %A" result
+    mapRoute result,Cmd.none 
 
-let update (msg:Option<Route>) model =
-    printfn "msg : %A" msg
-    printfn "model : %A" model
-    model, Cmd.none
+let update (msg:Option<Route>) m =
+    m, Cmd.none
 
-Program.mkProgram init update (fun model _ -> printf "%A\n" model )
+Program.mkProgram init update (fun _ _ -> ())
 |> Program.toNavigable (parseHash route) urlUpdate
 |> Program.run
-
-// let update model msg =
-//     model, Navigation.newUrl "some_other_location"
