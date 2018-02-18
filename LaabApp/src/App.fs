@@ -42,13 +42,12 @@ let makeVisible (l: NodeListOf<Element>) =
         JustLazy?registerLazyLoad(l.item(i)) |> ignore
 
 
-let rec fluff (url: string) target origin =
-    printfn "fluff : %A %A %A" url target origin
+let rec fluff (id: string) target origin =
+    printfn "fluff : %A %A %A" id target origin
     try
-        let idurl = url.Split([|'#'|]).[1]
-        let el = document.getElementById(idurl)
+        let el = document.getElementById(id)
         match el with
-        | null -> printfn "Got null with document.getElementById(%s)" idurl
+        | null -> printfn "Got null with document.getElementById(%s)" id; failwith "null element"
         | _ -> el.hidden <- false        
                el.classList.add("active")
 
@@ -62,7 +61,7 @@ let rec fluff (url: string) target origin =
         | true -> ()
         | false -> (old |> Seq.head).hidden <- true
         if System.String.Equals(el.id,"first") then
-                    fluff "/firstContent" "LoadMe" "a.pageFetcher" |> ignore
+                    fluff "firstContent" "LoadMe" "a.pageFetcher" |> ignore
         else
             makeVisible(el.querySelectorAll(".justlazy-spinner"))
 
@@ -113,19 +112,20 @@ let mapRoute (result:Option<Route>) =
         | Some s -> s
         | None -> Content "firstContent"
     let mapFun = match mapRes with
-                 | Content s -> (fun _ -> promise { fluff "#/Content.html" "content" "nav a" |> ignore
-                                                    fluff ("#/" + s) "LoadMe" "a.pageFetcher" |> ignore })
-                 | Nav s -> (fun _ -> promise { fluff ("#/" + s) "content" "nav a" |> ignore })         
-    mapRes, (Cmd.ofPromise mapFun () id ignore)
+                 | Content s -> (fun _ -> fluff "Content.html" "content" "nav a" |> ignore
+                                          fluff s "LoadMe" "a.pageFetcher" |> ignore)
+                 | Nav s -> (fun _ -> fluff s "content" "nav a" |> ignore)         
+    mapRes, (Cmd.ofFunc mapFun () id ignore)
     
 let urlUpdate (result:Option<Route>) _ =
     printfn "urlUpdate : %A" result
     mapRoute result
     
 let init (result:Option<Route>) =
-    ready (fun _ -> toload "content" "nav a")
     printfn "init : %A" result
-    mapRoute result
+    let res = mapRoute result
+    fst res, (Cmd.batch [(Cmd.ofFunc (fun _ -> ready (fun _ -> toload "content" "nav a")) () id ignore);
+                         (snd res)]) 
 
 let update _ m = 
     printfn "update : %A" m
