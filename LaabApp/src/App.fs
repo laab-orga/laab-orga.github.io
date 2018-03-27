@@ -28,6 +28,7 @@ let fetchMy (url:string) (loadme:Element) post hidden =
         mydiv.innerHTML <- body
         loadme.appendChild(mydiv) |> ignore
         post()
+        printfn "fini de charger : %s" url
         return ()
     }
 
@@ -124,7 +125,7 @@ let urlUpdate (result:Option<Route>) _ =
 let init (result:Option<Route>) =
     printfn "init : %A" result
     let res = mapRoute result
-    fst res, (Cmd.batch [(Cmd.ofFunc (fun _ -> ready (fun _ -> toload "content" "nav a")) () id ignore);
+    fst res, (Cmd.batch [(Cmd.ofFunc (fun _ -> toload "content" "nav a") () id ignore);
                          (snd res)]) 
 
 let update _ m = 
