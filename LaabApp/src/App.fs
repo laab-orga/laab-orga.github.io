@@ -9,7 +9,9 @@ importAll "core-js/shim"
 importAll "whatwg-fetch"
 
 let JustLazy = importDefault<obj> "../node_modules/justlazy/src/justlazy.js"
-
+let LoadPageEvent = document.createEvent_CustomEvent()
+LoadPageEvent.initEvent("loadFragment",true,true)
+let mutable refcount = 0
 let ready fn =
     if (document.readyState <> "loading") 
     then 
@@ -18,17 +20,28 @@ let ready fn =
         document.addEventListener("DOMContentLoaded",
                                   U2.Case1 (unbox (fun _ -> fn())))
 
+let rec readyFragments () =
+    printfn "readyFragment : %i" refcount
+    if (refcount > 0)
+    then
+        document.addEventListener("loadFragment",
+                                   U2.Case1 (unbox (fun _ -> readyFragments())))
+    else
+        ()
+
 let fetchMy (url:string) (loadme:Element) post hidden =
     promise {
         let! response = Fetch.fetch (url.Substring(2)) [] 
         let! body = response.text()
         let mydiv = document.createElement_div()
-        mydiv.id <- url.Split([|'#'|]).[1]
+        mydiv.id <- url.Split([|'#'|]).[1].Substring(1)
         mydiv.hidden <- hidden
         mydiv.innerHTML <- body
         loadme.appendChild(mydiv) |> ignore
         post()
         printfn "fini de charger : %s" url
+        refcount <- refcount - 1
+        document.dispatchEvent(LoadPageEvent) |> ignore
         return ()
     }
 
@@ -74,6 +87,8 @@ let rec toload target origin =
     let loadme = document.getElementById(target)
     let links = document.querySelectorAll(origin)
     let l = links.length
+    printfn "increment refcount to %i" (int l)
+    refcount <- refcount + (int l)
     for i in 0.0 .. (l-1.0) do
         let el = links.item(i) :?> HTMLElement
         let id = el.getAttribute("href")
@@ -125,7 +140,8 @@ let urlUpdate (result:Option<Route>) _ =
 let init (result:Option<Route>) =
     printfn "init : %A" result
     let res = mapRoute result
-    fst res, (Cmd.batch [(Cmd.ofFunc (fun _ -> toload "content" "nav a") () id ignore);
+    fst res, (Cmd.batch [(Cmd.ofFunc (fun _ -> ready (fun _ -> toload "content" "nav a"); printfn "1st cmd fini") () id ignore)
+                         (Cmd.ofFunc readyFragments () id ignore);
                          (snd res)]) 
 
 let update _ m = 
