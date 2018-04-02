@@ -9,25 +9,10 @@ importAll "core-js/shim"
 importAll "whatwg-fetch"
 
 let JustLazy = importDefault<obj> "../node_modules/justlazy/src/justlazy.js"
+let mutable refcount = 64
+
 let LoadPageEvent = document.createEvent_CustomEvent()
 LoadPageEvent.initEvent("loadFragment",true,true)
-let mutable refcount = 0
-let ready fn =
-    if (document.readyState <> "loading") 
-    then 
-        fn()
-    else
-        document.addEventListener("DOMContentLoaded",
-                                  U2.Case1 (unbox (fun _ -> fn())))
-
-let rec readyFragments () =
-    printfn "readyFragment : %i" refcount
-    if (refcount > 0)
-    then
-        document.addEventListener("loadFragment",
-                                   U2.Case1 (unbox (fun _ -> readyFragments())))
-    else
-        ()
 
 let fetchMy (url:string) (loadme:Element) post hidden =
     promise {
@@ -41,7 +26,11 @@ let fetchMy (url:string) (loadme:Element) post hidden =
         post()
         printfn "fini de charger : %s" url
         refcount <- refcount - 1
-        document.dispatchEvent(LoadPageEvent) |> ignore
+        if (refcount = 0) 
+        then 
+            document.dispatchEvent(LoadPageEvent) |> ignore
+        else 
+            ()
         return ()
     }
 
@@ -59,16 +48,17 @@ let makeVisible (l: NodeListOf<Element>) =
 let rec fluff (id: string) target origin =
     printfn "fluff : %A %A %A" id target origin
     try
+        let curactive = document.querySelector(origin + ".active")
+        match curactive with
+        | null -> ()
+        | _ when not (id = "Content.html" && curactive.id = "first") -> printfn "removing active class for : %s" curactive.id; curactive.classList.remove("active")
+        | _ -> ()
+
         let el = document.getElementById(id)
         match el with
         | null -> printfn "Got null with document.getElementById(%s)" id; failwith "null element"
         | _ -> el.hidden <- false        
                el.classList.add("active")
-
-        let curactive = document.querySelector(origin + ".active")
-        match curactive with
-        | null -> ()
-        | _ -> curactive.classList.remove("active")
 
         let old = document.querySelectorAll("#" + target + "> div") |> findVisible
         match Seq.isEmpty old with
@@ -87,8 +77,6 @@ let rec toload target origin =
     let loadme = document.getElementById(target)
     let links = document.querySelectorAll(origin)
     let l = links.length
-    printfn "increment refcount to %i" (int l)
-    refcount <- refcount + (int l)
     for i in 0.0 .. (l-1.0) do
         let el = links.item(i) :?> HTMLElement
         let id = el.getAttribute("href")
@@ -129,25 +117,28 @@ let mapRoute (result:Option<Route>) =
         | None -> Content "firstContent"
     let mapFun = match mapRes with
                  | Content s -> (fun _ -> fluff "Content.html" "content" "nav a" |> ignore
-                                          fluff s "LoadMe" "a.pageFetcher" |> ignore)
-                 | Nav s -> (fun _ -> fluff s "content" "nav a" |> ignore)         
-    mapRes, (Cmd.ofFunc mapFun () id ignore)
+                                          fluff s "LoadMe" "a.pageFetcher" |> ignore; Some mapRes)
+                 | Nav s -> (fun _ -> fluff s "content" "nav a" |> ignore; Some mapRes)         
+    Some mapRes, mapFun
     
-let urlUpdate (result:Option<Route>) _ =
-    printfn "urlUpdate : %A" result
-    mapRoute result
-    
-let init (result:Option<Route>) =
-    printfn "init : %A" result
-    let res = mapRoute result
-    fst res, (Cmd.batch [(Cmd.ofFunc (fun _ -> ready (fun _ -> toload "content" "nav a"); printfn "1st cmd fini") () id ignore)
-                         (Cmd.ofFunc readyFragments () id ignore);
-                         (snd res)]) 
+let readyR s =
+    let sub dispatch =
+        document.addEventListener("DOMContentLoaded",
+                                  U2.Case1 (unbox (fun _ -> toload "content" "nav a"; printfn "content %A dispatch %A" s dispatch; dispatch s)))
+    Cmd.ofSub sub
 
-let update _ m = 
-    printfn "update : %A" m
-    m, Cmd.none
+let readyF r =
+    let sub dispatch =
+        document.addEventListener("loadFragment",
+                                   U2.Case1 (unbox (fun _ -> printfn "dispatch %A dispatch %A" r dispatch; (snd (mapRoute r))() |> ignore; dispatch r)))
+    Cmd.ofSub sub
 
-Program.mkProgram init update (fun m _ -> printfn "view : %A" m)
+let urlUpdate r _ =
+    let mapRes,mapFun = mapRoute r
+    mapRes, Cmd.ofFunc mapFun () id (fun _ -> mapRes)
+
+Program.mkSimple (fun a -> printfn "init %A" a; a) (fun a  b -> printfn "update a: %A b: %A" a b; b) (fun a b -> printfn "view a: %A b: %A" a b; a)
+|> Program.withSubscription readyR
+|> Program.withSubscription readyF
 |> Program.toNavigable (parseHash route) urlUpdate
 |> Program.run
