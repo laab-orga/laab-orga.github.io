@@ -60,3 +60,5 @@ typings/
 
 js/script.js
 js/script.js.map
+.fake
+.ionide
